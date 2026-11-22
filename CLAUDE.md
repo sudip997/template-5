@@ -2,8 +2,7 @@
 
 ## 1. Project Overview
 
-Build a premium, modern AI SaaS landing page template using the existing
-project.
+Build a premium, modern, production-grade and elegant AI SaaS landing page template.
 
 The website should communicate intelligence, reliability, innovation,
 and simplicity. It should feel like a sophisticated AI software
