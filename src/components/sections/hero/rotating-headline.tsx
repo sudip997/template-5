@@ -1,8 +1,60 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { EASE_OUT } from "./motion";
+
+const DELETE_DELAY_MS = 28;
+const TYPE_DELAY_MS = 50;
+const TYPE_JITTER_MS = 40;
+
+/**
+ * Types `target` out one character at a time. When the target changes, the
+ * current text is deleted back to the shared prefix (if any) and the new word is
+ * typed in. When disabled (reduced motion) the target is returned as-is.
+ */
+function useTypewriter(target: string, enabled: boolean): string {
+  const [text, setText] = useState(target);
+  const textRef = useRef(target);
+
+  useEffect(() => {
+    if (!enabled) {
+      textRef.current = target;
+      return;
+    }
+
+    let timer: number | undefined;
+
+    const update = (next: string) => {
+      textRef.current = next;
+      setText(next);
+    };
+
+    const tick = () => {
+      const current = textRef.current;
+      if (current === target) return;
+
+      if (target.startsWith(current)) {
+        update(target.slice(0, current.length + 1));
+        timer = window.setTimeout(
+          tick,
+          TYPE_DELAY_MS + Math.random() * TYPE_JITTER_MS,
+        );
+      } else {
+        update(current.slice(0, -1));
+        timer = window.setTimeout(tick, DELETE_DELAY_MS);
+      }
+    };
+
+    timer = window.setTimeout(tick, DELETE_DELAY_MS);
+
+    return () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [target, enabled]);
+
+  return enabled ? text : target;
+}
 
 type RotatingHeadlineProps = {
   prefix: string;
@@ -14,7 +66,8 @@ type RotatingHeadlineProps = {
 /**
  * The Hero <h1>. Screen readers get one static sentence; the animated word is
  * aria-hidden. All words are stacked invisibly in the same grid cell so the slot
- * is always as wide and tall as the longest word, which prevents layout shift.
+ * is always as wide and tall as the longest word, which prevents layout shift
+ * while the active word is being typed or deleted.
  */
 export function RotatingHeadline({
   prefix,
@@ -24,6 +77,7 @@ export function RotatingHeadline({
 }: RotatingHeadlineProps) {
   const reduceMotion = useReducedMotion();
   const activeWord = words[activeIndex] ?? words[0];
+  const typedWord = useTypewriter(activeWord, !reduceMotion);
 
   return (
     <h1
@@ -38,8 +92,7 @@ export function RotatingHeadline({
       <span aria-hidden="true" className="block">
         {prefix}{" "}
         <span className="block">
-          {/* The padding and negative margin keep descenders (the "g") from being clipped. */}
-          <span className="-mb-[0.14em] inline-grid overflow-hidden pb-[0.14em] align-top">
+          <span className="inline-grid align-top">
             {words.map((word) => (
               <span
                 key={word}
@@ -49,26 +102,21 @@ export function RotatingHeadline({
               </span>
             ))}
 
-            <AnimatePresence initial={false}>
-              <motion.span
-                key={activeWord}
-                className="col-start-1 row-start-1 bg-linear-to-r from-primary to-brand-soft bg-clip-text text-transparent"
-                initial={
-                  reduceMotion
-                    ? false
-                    : { y: "70%", opacity: 0, filter: "blur(6px)" }
-                }
-                animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
-                exit={
-                  reduceMotion
-                    ? undefined
-                    : { y: "-70%", opacity: 0, filter: "blur(6px)" }
-                }
-                transition={{ duration: 0.5, ease: EASE_OUT }}
-              >
-                {activeWord}
-              </motion.span>
-            </AnimatePresence>
+            <span className="col-start-1 row-start-1 whitespace-nowrap bg-linear-to-r from-primary to-brand-soft bg-clip-text text-transparent">
+              {typedWord}
+              {!reduceMotion && (
+                <motion.span
+                  className="ml-[0.05em] inline-block h-[0.82em] w-[0.07em] rounded-full bg-primary"
+                  animate={{ opacity: [1, 0] }}
+                  transition={{
+                    duration: 0.55,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut",
+                  }}
+                />
+              )}
+            </span>
           </span>
         </span>
       </span>
