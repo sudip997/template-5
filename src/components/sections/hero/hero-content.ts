@@ -18,7 +18,8 @@ export type HeroSlide = {
 
 export const heroHeadlinePrefix = "Turn scattered data into";
 
-export const heroRotationIntervalMs = 2800;
+/** Time between word changes. Leaves room for the delete-and-type animation plus a pause to read. */
+export const heroRotationIntervalMs = 3400;
 
 export const heroSlides: readonly HeroSlide[] = [
   {
