@@ -1,95 +1,53 @@
 "use client";
 
-import { useId } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { EASE_OUT } from "./motion";
 
-const WIDTH = 240;
-const HEIGHT = 96;
+/** Bar heights as a percentage of the plot area. Sample data only. */
+const BARS = [34, 46, 40, 56, 52, 64, 60, 72, 78, 84, 92, 100] as const;
 
-/** A simple rising J-curve with a soft fade underneath. Sample data only. */
-const LINE_PATH =
-  "M0 80 C 28 79, 44 74, 64 68 S 100 60, 120 52 S 156 42, 176 30 S 214 14, 232 8";
-const AREA_PATH = `${LINE_PATH} L232 ${HEIGHT} L0 ${HEIGHT} Z`;
-const END_POINT = { x: 232, y: 8 };
-
+/**
+ * A weekly activity bar chart. Bars grow up from the baseline once, staggered
+ * left to right, and the latest bar is the full-strength brand blue.
+ * There is no looping or glow animation.
+ */
 export function ActivityChart() {
   const reduceMotion = useReducedMotion();
-  const gradientId = useId();
 
   return (
-    <svg
-      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-      className="h-auto w-full text-primary"
-      fill="none"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="currentColor" stopOpacity="0.28" />
-          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
-      {[24, 48, 72].map((y) => (
-        <line
-          key={y}
-          x1="0"
-          x2={WIDTH}
-          y1={y}
-          y2={y}
-          className="stroke-border"
-          strokeDasharray="3 4"
+    <div className="relative h-24 w-full" aria-hidden="true">
+      {/* Horizontal guide lines */}
+      {[25, 50, 75].map((position) => (
+        <span
+          key={position}
+          className="absolute inset-x-0 border-t border-dashed border-border"
+          style={{ bottom: `${position}%` }}
         />
       ))}
 
-      <motion.path
-        d={AREA_PATH}
-        fill={`url(#${gradientId})`}
-        initial={reduceMotion ? false : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, delay: 1.2, ease: EASE_OUT }}
-      />
+      <div className="relative flex h-full items-end gap-1.5">
+        {BARS.map((height, index) => {
+          const isLatest = index === BARS.length - 1;
 
-      <motion.path
-        d={LINE_PATH}
-        stroke="currentColor"
-        strokeWidth={2}
-        strokeLinecap="round"
-        initial={reduceMotion ? false : { pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.3, delay: 0.9, ease: EASE_OUT }}
-      />
-
-      {!reduceMotion && (
-        <motion.circle
-          cx={END_POINT.x}
-          cy={END_POINT.y}
-          r={4}
-          fill="currentColor"
-          initial={{ opacity: 0 }}
-          animate={{ r: [4, 11], opacity: [0.35, 0] }}
-          transition={{
-            duration: 2.2,
-            delay: 2.2,
-            repeat: Infinity,
-            ease: "easeOut",
-          }}
-        />
-      )}
-
-      <motion.circle
-        cx={END_POINT.x}
-        cy={END_POINT.y}
-        r={4}
-        fill="currentColor"
-        className="stroke-card"
-        strokeWidth={2}
-        initial={reduceMotion ? false : { opacity: 0, scale: 0.4 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 2.1, ease: EASE_OUT }}
-        style={{ transformBox: "fill-box", transformOrigin: "center" }}
-      />
-    </svg>
+          return (
+            <motion.div
+              key={index}
+              className="flex-1 origin-bottom rounded-t-[3px] bg-primary"
+              style={{
+                height: `${height}%`,
+                opacity: isLatest ? 1 : 0.28 + index * 0.05,
+              }}
+              initial={reduceMotion ? false : { scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.9 + index * 0.05,
+                ease: EASE_OUT,
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
   );
 }
