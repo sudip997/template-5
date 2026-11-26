@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const DELETE_DELAY_MS = 28;
-const TYPE_DELAY_MS = 50;
+const TYPE_DELAY_MS = 70;
 const TYPE_JITTER_MS = 40;
 
 /**
@@ -83,7 +83,7 @@ export function RotatingHeadline({
     <h1
       id="hero-heading"
       className={cn(
-        "font-heading text-balance text-[2.75rem] leading-[1.02] font-bold tracking-[-0.035em] text-foreground sm:text-6xl lg:text-[3.5rem] xl:text-[4.25rem]",
+        "font-heading text-balance text-[2.75rem] leading-[1.02] font-bold tracking-[-0.035em] text-foreground sm:text-6xl lg:text-[3.5rem] xl:text-[4.25rem] overflow-visible",
         className,
       )}
     >
@@ -102,7 +102,7 @@ export function RotatingHeadline({
               </span>
             ))}
 
-            <span className="col-start-1 row-start-1 whitespace-nowrap bg-linear-to-r from-primary to-brand-soft bg-clip-text text-transparent">
+            <span className="col-start-1 row-start-1 whitespace-nowrap bg-linear-to-r from-primary to-brand-soft bg-clip-text text-transparent leading-[1.2]">
               {typedWord}
               {!reduceMotion && (
                 <motion.span

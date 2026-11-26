@@ -68,7 +68,8 @@ export function HeroProductPreview({
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     // Tilt is a mouse-only flourish: skip touch/pen input and reduced motion.
-    if (reduceMotion || event.pointerType !== "mouse" || !tiltRef.current) return;
+    if (reduceMotion || event.pointerType !== "mouse" || !tiltRef.current)
+      return;
     const rect = tiltRef.current.getBoundingClientRect();
     pointerX.set((event.clientX - rect.left) / rect.width - 0.5);
     pointerY.set((event.clientY - rect.top) / rect.height - 0.5);
@@ -90,13 +91,13 @@ export function HeroProductPreview({
       <NeuralBackdrop className="absolute -top-16 -right-10 -z-10 hidden w-[30rem] max-w-none opacity-60 md:block" />
 
       <div
-        ref={tiltRef}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={resetTilt}
+        // ref={tiltRef}
+        // onPointerMove={handlePointerMove}
+        // onPointerLeave={resetTilt}
         className="[perspective:1400px]"
       >
         <motion.div
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          //   style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
           className="overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-2xl shadow-primary/10 ring-1 ring-foreground/[0.03]"
         >
           {/* Window chrome */}
