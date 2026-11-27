@@ -167,3 +167,25 @@
     opacity: 0;
   }
 }
+
+/* Logo cloud: a short highlight crossing the grid's top line, then a rest. */
+@keyframes logo-cloud-pulse {
+  from {
+    transform: translateX(-60%);
+  }
+  60%,
+  to {
+    transform: translateX(60%);
+  }
+}
+
+.logo-cloud-pulse {
+  animation: logo-cloud-pulse 5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-cloud-pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
