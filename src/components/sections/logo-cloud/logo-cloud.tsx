@@ -64,7 +64,7 @@ export function LogoCloud() {
       <Container>
         <h2
           id="logo-cloud-heading"
-          className="text-center text-sm font-medium text-balance text-muted-foreground"
+          className="text-center font-medium text-balance text-sm text-muted-foreground/70"
         >
           {logoCloudTitle}
         </h2>
