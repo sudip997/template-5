@@ -4,6 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Scroll-pinned layouts need a wide, tall enough screen and no reduced motion. */
+@custom-variant pinned (@media (min-width: 64rem) and (min-height: 40rem) and (prefers-reduced-motion: no-preference));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -187,5 +190,23 @@
   .logo-cloud-pulse {
     animation: none;
     opacity: 0;
+  }
+}
+
+/* Signal to action: dashes drifting from each data source towards Nexora. */
+@keyframes signal-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.signal-flow {
+  stroke-dasharray: 5 5;
+  animation: signal-flow 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-flow {
+    animation: none;
   }
 }
