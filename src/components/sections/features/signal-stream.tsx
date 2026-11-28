@@ -82,7 +82,7 @@ export function SignalStream() {
           hoveredRef.current = false;
         }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(color-mix(in_oklab,var(--muted-foreground)_28%,transparent)_1px,transparent_1px)] bg-size-[16px_16px] bg-center" />
+        {/* <div className="absolute inset-0 bg-[radial-gradient(color-mix(in_oklab,var(--muted-foreground)_28%,transparent)_1px,transparent_1px)] bg-size-[16px_16px] bg-center" /> */}
 
         <ul>
           {liveSignals.map((signal, index) => {

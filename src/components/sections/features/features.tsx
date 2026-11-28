@@ -56,10 +56,10 @@ export function Features() {
                 }}
               >
                 <div className="p-6 pb-4 sm:p-8 sm:pb-4">
-                  <h3 className="font-heading text-xl font-bold tracking-tight text-primary">
+                  <h3 className="font-heading text-xl font-bold tracking-tight text-foreground">
                     {feature.title}
                   </h3>
-                  <p className="mt-2 max-w-md leading-relaxed text-pretty">
+                  <p className="mt-2 max-w-md leading-relaxed text-pretty text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>
